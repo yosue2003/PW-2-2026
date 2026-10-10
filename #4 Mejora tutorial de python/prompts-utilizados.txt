@@ -1,0 +1,65 @@
+DOCUMENTO: PROMPTS UTILIZADOS PARA DESARROLLAR EL TUTORIAL
+Proyecto: #4 Mejora tutorial de Python
+
+OBJETIVO DE ESTE DOCUMENTO
+Explicar qué instrucciones guiaron la creación y los cambios del tutorial. El prompt detallado que aparece en la página fue redactado para convertir el encargo inicial en requisitos ordenados. Después, el alcance se actualizó siguiendo las indicaciones del usuario.
+
+1. ENCARGO INICIAL DEL USUARIO
+
+"en la carpeta #4
+explicar el codigo de lo que se hizo con ia
+TUTORIAL DE PYTHON W3.CSS
+ampliar el tutorial de python que tenga mas contenido
+python para todos (charles severo)
+TODO MOBILE FIRST(mobile portraid)
+mobile land scape y luego para laptop
+en github (entregar documento web )
+a moodle subir el enlace del video(construccion de doc web hecho con ia *PONER NOMBRE*) proceso explicar las herramientas de uso, elaboracion del prompt"
+
+¿QUÉ SE PIDIÓ?
+- Crear el documento web dentro de la carpeta #4.
+- Ampliar un tutorial introductorio de Python y explicar el código.
+- Usar como referencia Python for Everybody, de Charles R. Severance.
+- Incluir W3.CSS y explicar el uso de IA, las herramientas y el prompt.
+- Empezar el diseño por teléfono vertical, adaptarlo a teléfono horizontal y después a laptop.
+- La solicitud original también mencionaba publicar el documento y entregar un video; estas partes fueron quitadas más adelante por indicación del usuario.
+
+2. PROMPT DETALLADO DE DESARROLLO
+
+"Crea un documento web educativo en español para principiantes: amplía un tutorial de Python siguiendo los temas de Python for Everybody, de Charles R. Severance, con ejemplos originales y explicación de cada bloque. Usa W3.CSS y CSS propio. Diseña mobile first para móvil vertical; añade ajustes para móvil horizontal y luego laptop. Incluye una sección que explique el proceso con IA, las herramientas utilizadas, las fuentes consultadas y una explicación del código generado. Usa HTML semántico, accesibilidad básica, navegación por secciones y deja un campo editable para el nombre del estudiante."
+
+¿QUÉ APORTÓ ESTE PROMPT?
+- Definió el público y el idioma.
+- Organizó el contenido de Python en ejemplos cortos y explicados.
+- Separó la estructura HTML de la presentación CSS.
+- Especificó el orden responsive: móvil vertical, móvil horizontal y laptop.
+- Pidió accesibilidad básica, navegación interna, fuentes y transparencia sobre el uso de IA.
+
+3. INSTRUCCIÓN POSTERIOR PARA QUITAR SECCIONES
+
+"elimina GitHub Pages y Moodle todo ellopublicar el sitio y presentar el proceso"
+
+¿QUÉ CAMBIÓ?
+Se eliminó de la página el contenido de publicación y entrega: la sección de GitHub Pages, Moodle, el video, su título sugerido y el espacio para pegar su enlace. Se conservó la explicación de cómo se construyó la página con IA y cómo leer su código.
+
+4. INSTRUCCIÓN POSTERIOR PARA INCORPORAR EL PROYECTO AL REPOSITORIO
+
+"subelo a github como #4 Mejora tutorial de python al repositorio [analisis-cabeceras-wireshark] y cambia el nombre del repositorio por PW 2-2026"
+
+¿QUÉ SE HIZO?
+Se añadió la carpeta del tutorial al repositorio existente y se cambió el nombre del repositorio. GitHub no admite espacios en nombres de repositorio, por eso se usó el formato PW-2-2026.
+
+5. INSTRUCCIÓN PARA ESTE DOCUMENTO
+
+"agrega un documento texto explicando los prompts que se usaro npara desarrollar"
+
+¿QUÉ PIDIÓ?
+Añadir este archivo de texto para dejar registro del propósito y la evolución de las instrucciones utilizadas.
+
+HERRAMIENTAS Y CRITERIO DE USO
+- OpenAI Codex: apoyo para organizar el contenido, redactar ejemplos y editar los archivos del sitio.
+- HTML: estructura del documento y contenido de las lecciones.
+- W3.CSS y CSS propio: estilos y adaptación a distintos tamaños de pantalla.
+- Fuentes enlazadas en index.html: consulta para verificar la ruta temática de Python y los ejemplos de W3.CSS.
+
+La IA ayudó a producir y revisar un borrador. El contenido debe leerse y entenderse; los ejemplos y las explicaciones se deben poder presentar con palabras propias.
