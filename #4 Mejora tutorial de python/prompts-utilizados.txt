@@ -1,8 +1,7 @@
 DOCUMENTO: PROMPTS UTILIZADOS PARA DESARROLLAR EL TUTORIAL
+
 Proyecto: #4 Mejora tutorial de Python
 
-OBJETIVO DE ESTE DOCUMENTO
-Explicar qué instrucciones guiaron la creación y los cambios del tutorial. El prompt detallado que aparece en la página fue redactado para convertir el encargo inicial en requisitos ordenados. Después, el alcance se actualizó siguiendo las indicaciones del usuario.
 
 1. ENCARGO INICIAL DEL USUARIO
 
@@ -62,4 +61,3 @@ HERRAMIENTAS Y CRITERIO DE USO
 - W3.CSS y CSS propio: estilos y adaptación a distintos tamaños de pantalla.
 - Fuentes enlazadas en index.html: consulta para verificar la ruta temática de Python y los ejemplos de W3.CSS.
 
-La IA ayudó a producir y revisar un borrador. El contenido debe leerse y entenderse; los ejemplos y las explicaciones se deben poder presentar con palabras propias.

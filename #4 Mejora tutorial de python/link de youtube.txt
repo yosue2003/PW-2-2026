@@ -1,6 +1,4 @@
 ENLACE DEL VIDEO EN YOUTUBE
 
-Título del video: Construcción de un documento web con IA — [TU NOMBRE]
-Enlace: [PEGA AQUÍ LA URL DE YOUTUBE]
+Enlace: https://youtu.be/jp_1o5bdFGg
 
-Reemplaza el texto entre corchetes cuando el video esté publicado.
