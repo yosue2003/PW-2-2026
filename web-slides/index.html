@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f6f9">
+  <meta name="description" content="Web Slides: crea y presenta diapositivas sin servidor y sin localStorage.">
+  <title>Web Slides · Editor de presentaciones</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://www.w3schools.com/w3css/4/w3.css" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="app-header" aria-label="Encabezado de Web Slides">
+      <a class="brand" href="#editor" aria-label="Web Slides, volver al editor">
+        <span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></span>
+        <span class="brand-name">web<span>slides</span><span class="brand-period">.</span></span>
+      </a>
+      <div class="header-divider" aria-hidden="true"></div>
+      <label class="deck-name-wrap" for="deck-title">
+        <span class="eyebrow">MI PRESENTACIÓN</span>
+        <input id="deck-title" type="text" maxlength="100" value="Mi presentación" aria-label="Nombre de la presentación" autocomplete="off">
+      </label>
+      <div class="header-actions">
+        <span class="save-state" id="save-state" role="status" aria-live="polite"><span class="save-dot"></span> Cargando…</span>
+        <button class="w3-button button-ghost button-top" id="new-deck" title="Crear nueva presentación"><span aria-hidden="true">＋</span><span class="button-label"> Nuevo</span></button>
+        <button class="w3-button button-ghost button-top" id="import-deck" title="Importar JSON"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4m0 0L7 9m5-5 5 5M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></svg><span class="button-label"> Importar</span></button>
+        <button class="w3-button button-ghost button-top" id="export-deck" title="Exportar JSON"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v12m0 0-5-5m5 5 5-5M4 17v2a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-2"/></svg><span class="button-label"> Exportar</span></button>
+        <button class="w3-button button-primary" id="start-presentation"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 9 6-9 6V6Z"/></svg> Presentar</button>
+        <input id="file-import" type="file" accept=".json,application/json" hidden>
+      </div>
+    </header>
+
+    <div class="workspace" id="editor">
+      <aside class="slide-sidebar" aria-label="Lista de diapositivas">
+        <div class="sidebar-top">
+          <div>
+            <span class="eyebrow">PRESENTACIÓN</span>
+            <h2>Diapositivas <span class="counter-pill" id="sidebar-count">0</span></h2>
+          </div>
+          <button class="icon-button" id="add-slide-small" aria-label="Añadir diapositiva" title="Añadir diapositiva">＋</button>
+        </div>
+        <div class="slides-scroll" id="slides-list" role="listbox" aria-label="Diapositivas de esta presentación"></div>
+        <button id="add-slide" class="add-slide-button w3-button"><span class="plus-icon">＋</span> Añadir diapositiva <span class="shortcut">⌘↵</span></button>
+        <div class="sidebar-hint"><span class="hint-icon">✦</span><span>Todo se guarda automáticamente en tu navegador.</span></div>
+      </aside>
+
+      <main class="stage-area" aria-label="Editor de la diapositiva">
+        <div class="stage-topbar">
+          <div class="location-trail"><span>Editor</span><span class="trail-chevron">›</span><strong id="breadcrumb-slide">Diapositiva 0</strong></div>
+          <div class="stage-actions">
+            <button class="mini-action" id="duplicate-slide" title="Duplicar diapositiva"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg> Duplicar</button>
+            <button class="mini-action" id="move-slide-up" title="Mover diapositiva arriba">↑</button>
+            <button class="mini-action" id="move-slide-down" title="Mover diapositiva abajo">↓</button>
+            <button class="mini-action danger-action" id="delete-slide" title="Eliminar diapositiva"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18m-2 0-1 14H6L5 6m3 0V4h8v2m-6 4v7m4-7v7"/></svg></button>
+          </div>
+        </div>
+        <div class="stage-center">
+          <div class="canvas-outline" id="canvas-outline">
+            <div id="slide-canvas" class="slide-canvas" aria-label="Vista previa de la diapositiva"></div>
+          </div>
+          <div class="under-canvas"><span><span class="green-circle"></span> Vista previa en tiempo real</span><span id="canvas-ratio-label">16:9 · Pantalla ancha</span></div>
+        </div>
+        <div class="stage-bottom-note"><span class="keycaps">←</span> <span class="keycaps">→</span> Navegar <span class="dot-separator">·</span> Haz clic en el título o texto para editarlo directamente.</div>
+      </main>
+
+      <aside class="properties-sidebar" aria-label="Propiedades de la diapositiva">
+        <div class="properties-heading"><div><span class="eyebrow">PERSONALIZACIÓN</span><h2>Diseño <span class="sparkle">✳</span></h2></div></div>
+        <div class="property-scroll">
+          <section class="property-section">
+            <h3>Contenido</h3>
+            <label class="field-label" for="slide-title-input">Título <span id="title-type-label">de portada</span></label>
+            <input id="slide-title-input" type="text" maxlength="180" class="control-field w3-input" placeholder="Título de diapositiva">
+            <label class="field-label with-space" for="slide-body-input" id="body-field-label">Subtítulo</label>
+            <textarea id="slide-body-input" rows="4" maxlength="4000" class="control-field w3-input" placeholder="Escribe aquí el contenido…"></textarea>
+          </section>
+          <section class="property-section">
+            <h3>Formato</h3>
+            <label class="field-label" for="aspect-ratio">Tamaño de diapositiva</label>
+            <select id="aspect-ratio" class="control-field w3-select"><option value="16:9">Pantalla ancha (16:9)</option><option value="4:3">Estándar (4:3)</option></select>
+          </section>
+          <section class="property-section">
+            <h3>Fondo y colores</h3>
+            <p class="section-caption">Elige un estilo para esta diapositiva</p>
+            <div class="theme-options" id="theme-options" role="group" aria-label="Colores predefinidos">
+              <button type="button" class="theme-swatch" data-theme="night" title="Noche azul" aria-label="Fondo noche azul"></button>
+              <button type="button" class="theme-swatch" data-theme="white" title="Blanco" aria-label="Fondo blanco"></button>
+              <button type="button" class="theme-swatch" data-theme="blue" title="Azul real" aria-label="Fondo azul real"></button>
+              <button type="button" class="theme-swatch" data-theme="mint" title="Verde suave" aria-label="Fondo verde suave"></button>
+              <button type="button" class="theme-swatch" data-theme="peach" title="Melocotón" aria-label="Fondo melocotón"></button>
+              <button type="button" class="theme-swatch" data-theme="plum" title="Ciruela" aria-label="Fondo ciruela"></button>
+            </div>
+            <div class="custom-colors">
+              <label for="background-color">Fondo <input type="color" id="background-color" value="#ffffff"></label>
+              <label for="foreground-color">Texto <input type="color" id="foreground-color" value="#17263a"></label>
+            </div>
+          </section>
+          <section class="property-section">
+            <h3>Alineación de texto</h3>
+            <label class="field-label" for="title-align">Encabezado (head)</label>
+            <select id="title-align" class="control-field w3-select"><option value="left">Izquierda</option><option value="center">Centro</option><option value="right">Derecha</option></select>
+            <label class="field-label with-space" for="body-align">Contenido (body)</label>
+            <select id="body-align" class="control-field w3-select"><option value="left">Izquierda</option><option value="center">Centro</option><option value="right">Derecha</option></select>
+          </section>
+          <section class="property-section last-property">
+            <h3>Numeración</h3>
+            <label class="toggle-row" for="show-number"><span>Mostrar número de diapositiva</span><input id="show-number" type="checkbox" checked class="toggle-checkbox"></label>
+            <label class="field-label with-space" for="number-align">Alineación del número</label>
+            <select id="number-align" class="control-field w3-select"><option value="left">Izquierda</option><option value="center">Centro</option><option value="right">Derecha</option></select>
+          </section>
+        </div>
+      </aside>
+    </div>
+
+    <footer class="app-footer" aria-label="Pie de página y navegación">
+      <div class="footer-left"><span class="footer-brand-dot"></span> Web Slides <span class="footer-divider">/</span> <span id="slide-type-label">Portada</span></div>
+      <div class="footer-center"><div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div><span id="footer-count">00 / 00</span></div>
+      <div class="footer-nav"><button id="previous-slide" aria-label="Diapositiva anterior" title="Anterior (←)">‹</button><span id="footer-current">Slide 0</span><button id="next-slide" aria-label="Diapositiva siguiente" title="Siguiente (→)">›</button></div>
+    </footer>
+  </div>
+
+  <div id="presentation-overlay" class="presentation-overlay" role="dialog" aria-modal="true" aria-label="Modo presentación" hidden>
+    <div class="present-toolbar"><span class="present-brand">web<span>slides</span>.</span><div class="present-toolbar-right"><span id="present-counter">0 / 0</span><button id="close-presentation" title="Cerrar presentación (Esc)" aria-label="Cerrar presentación">✕</button></div></div>
+    <div id="present-slide-container" class="present-slide-container"><div id="present-slide" class="slide-canvas present-slide"></div></div>
+    <div class="present-bottom"><button id="present-prev" aria-label="Anterior">←</button><span>← → para navegar · Esc para salir</span><button id="present-next" aria-label="Siguiente">→</button></div>
+  </div>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+</body>
+</html>
