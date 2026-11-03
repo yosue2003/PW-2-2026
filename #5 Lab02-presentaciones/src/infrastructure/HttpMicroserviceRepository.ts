@@ -1,5 +1,5 @@
-import type { Project } from '../models/Project'
-import type { IProjectRepository } from '../models/ports/IProjectRepository'
+import type { Project } from '../models/Project.ts'
+import type { IProjectRepository } from '../models/ports/IProjectRepository.ts'
 
 /** Placeholder for a future REST adapter; no HTTP service is used in this lab phase. */
 export class HttpMicroserviceRepository implements IProjectRepository {

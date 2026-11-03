@@ -1,4 +1,4 @@
-import type { Slide } from './Slide'
+import type { Slide } from './Slide.ts'
 
 export interface Project {
   id: string

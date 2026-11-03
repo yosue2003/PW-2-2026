@@ -1,5 +1,5 @@
-import { IndexedDbProjectRepository } from '../infrastructure/IndexedDbProjectRepository'
-import type { Project } from '../models/Project'
+import { IndexedDbProjectRepository } from '../infrastructure/IndexedDbProjectRepository.ts'
+import type { Project } from '../models/Project.ts'
 
 const makeProject = (id: string, name: string): Project => ({
   id,
@@ -40,6 +40,10 @@ describe('IndexedDbProjectRepository', () => {
     await expect(repository.getAll()).resolves.toEqual([project])
   })
 
+  it('returns undefined when a project does not exist', async () => {
+    await expect(repository.getById('missing')).resolves.toBeUndefined()
+  })
+
   it('updates a saved project and deletes it', async () => {
     const project = makeProject('project-1', 'Borrador')
     await repository.save(project)
@@ -51,5 +55,15 @@ describe('IndexedDbProjectRepository', () => {
 
     await repository.delete(project.id)
     await expect(repository.getById(project.id)).resolves.toBeUndefined()
+  })
+
+  it('keeps projects available after closing and reopening the repository', async () => {
+    const project = makeProject('project-persistent', 'Persistente')
+    await repository.save(project)
+    await repository.close()
+
+    const reopenedRepository = new IndexedDbProjectRepository(databaseName)
+    await expect(reopenedRepository.getById(project.id)).resolves.toEqual(project)
+    await reopenedRepository.close()
   })
 })

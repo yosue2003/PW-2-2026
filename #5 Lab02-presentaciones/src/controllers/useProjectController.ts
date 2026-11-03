@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
-import type { Project } from '../models/Project'
-import type { IProjectRepository } from '../models/ports/IProjectRepository'
+import type { Project } from '../models/Project.ts'
+import type { IProjectRepository } from '../models/ports/IProjectRepository.ts'
 
 export interface NewProject {
   name: string

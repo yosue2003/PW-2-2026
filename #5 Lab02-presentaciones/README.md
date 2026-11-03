@@ -69,8 +69,9 @@ Completar cada fase antes de pasar a la siguiente: primero contratos y pruebas, 
 
 - **Fase 1 iniciada:** base Vite + React + TypeScript, configuración Tailwind y contratos iniciales en `src/models`.
 - **Fase 2 implementada:** repositorio IndexedDB, hook controlador de proyectos y pruebas automatizadas para ambas capas.
-- Las pruebas se ejecutan con `npm test` (5 pruebas pasan).
-- `npm run build` compila TypeScript, pero Vite no logra resolver una importación mientras la ruta de la carpeta contiene `#`. El navegador puede servir la app en desarrollo, pero queda pendiente resolver esa limitación de empaquetado para producción.
+- **Fase 3 implementada:** editor de proyectos y diapositivas, portada, tres layouts de contenido, vista previa y modo presentación con navegación por teclado.
+- Las pruebas se ejecutan con `npm test` (12 pruebas pasan).
+- `npm run build` compila TypeScript y genera la versión de producción. Las importaciones locales usan extensiones explícitas para resolver correctamente la ruta del proyecto, que contiene `#`.
 - Para instalar las dependencias y abrir el proyecto localmente, ejecuta en esta carpeta:
 
   ```bash

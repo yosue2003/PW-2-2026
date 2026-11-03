@@ -1,7 +1,7 @@
 import { act, renderHook, waitFor } from '@testing-library/react'
-import { useProjectController } from '../controllers/useProjectController'
-import type { IProjectRepository } from '../models/ports/IProjectRepository'
-import type { Project } from '../models/Project'
+import { useProjectController } from '../controllers/useProjectController.ts'
+import type { IProjectRepository } from '../models/ports/IProjectRepository.ts'
+import type { Project } from '../models/Project.ts'
 
 function makeRepository(initialProjects: Project[] = []): IProjectRepository {
   let projects = [...initialProjects]
@@ -30,6 +30,33 @@ describe('useProjectController', () => {
     expect(repository.getAll).toHaveBeenCalledTimes(1)
   })
 
+  it('clears loading and exposes a repository error when the initial load fails', async () => {
+    const repository = makeRepository()
+    jest.mocked(repository.getAll).mockRejectedValueOnce(new Error('falló la carga'))
+    const { result } = renderHook(() => useProjectController(repository))
+
+    await waitFor(() => expect(result.current.loading).toBe(false))
+    expect(result.current.error).toBe('falló la carga')
+    expect(result.current.projects).toEqual([])
+  })
+
+  it('refreshes the list and clears a previous error', async () => {
+    const repository = makeRepository()
+    const { result } = renderHook(() => useProjectController(repository))
+    await waitFor(() => expect(result.current.loading).toBe(false))
+    const project: Project = {
+      id: 'p-2', name: 'Arte', author: 'Ada', topic: 'Color', slides: [],
+      createdAt: '2026-10-29T12:00:00.000Z', updatedAt: '2026-10-29T12:00:00.000Z',
+    }
+    await act(async () => repository.save(project))
+
+    await act(async () => result.current.refreshProjects())
+
+    expect(result.current.projects).toEqual([project])
+    expect(result.current.error).toBeNull()
+    expect(repository.getAll).toHaveBeenCalledTimes(2)
+  })
+
   it('creates and removes projects through the repository', async () => {
     const repository = makeRepository()
     const { result } = renderHook(() => useProjectController(repository))
@@ -50,5 +77,54 @@ describe('useProjectController', () => {
     await act(async () => result.current.deleteProject(created!.id))
     expect(repository.delete).toHaveBeenCalledWith(created!.id)
     expect(result.current.projects).toEqual([])
+  })
+
+  it('trims project fields before saving', async () => {
+    const repository = makeRepository()
+    const { result } = renderHook(() => useProjectController(repository))
+    await waitFor(() => expect(result.current.loading).toBe(false))
+
+    await act(async () => result.current.createProject({
+      name: '  Historia  ', author: ' Ada ', topic: ' Roma  ',
+    }))
+
+    expect(repository.save).toHaveBeenCalledWith(expect.objectContaining({
+      name: 'Historia', author: 'Ada', topic: 'Roma',
+    }))
+  })
+
+  it('exposes creation errors and does not add an unsaved project', async () => {
+    const repository = makeRepository()
+    const failure = new Error('no se pudo guardar')
+    jest.mocked(repository.save).mockRejectedValueOnce(failure)
+    const { result } = renderHook(() => useProjectController(repository))
+    await waitFor(() => expect(result.current.loading).toBe(false))
+
+    await act(async () => {
+      await expect(result.current.createProject({ name: 'X', author: 'Y', topic: 'Z' }))
+        .rejects.toBe(failure)
+    })
+
+    expect(result.current.projects).toEqual([])
+    expect(result.current.error).toBe(failure.message)
+  })
+
+  it('exposes deletion errors and keeps the project in the list', async () => {
+    const project: Project = {
+      id: 'p-3', name: 'Música', author: 'Ada', topic: 'Ritmo', slides: [],
+      createdAt: '2026-10-29T12:00:00.000Z', updatedAt: '2026-10-29T12:00:00.000Z',
+    }
+    const repository = makeRepository([project])
+    const failure = new Error('no se pudo eliminar')
+    jest.mocked(repository.delete).mockRejectedValueOnce(failure)
+    const { result } = renderHook(() => useProjectController(repository))
+    await waitFor(() => expect(result.current.loading).toBe(false))
+
+    await act(async () => {
+      await expect(result.current.deleteProject(project.id)).rejects.toBe(failure)
+    })
+
+    expect(result.current.projects).toEqual([project])
+    expect(result.current.error).toBe(failure.message)
   })
 })

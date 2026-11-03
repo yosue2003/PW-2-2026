@@ -1,5 +1,5 @@
-import type { Project } from '../models/Project'
-import type { IProjectRepository } from '../models/ports/IProjectRepository'
+import type { Project } from '../models/Project.ts'
+import type { IProjectRepository } from '../models/ports/IProjectRepository.ts'
 
 const STORE_NAME = 'projects'
 const DATABASE_VERSION = 1

@@ -1,4 +1,4 @@
-import type { Project } from '../Project'
+import type { Project } from '../Project.ts'
 
 /** Contrato de persistencia; la vista no depende de IndexedDB ni de HTTP. */
 export interface IProjectRepository {

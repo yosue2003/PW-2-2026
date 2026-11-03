@@ -1,4 +1,4 @@
-import type { Project } from '../Project'
+import type { Project } from '../Project.ts'
 
 export type ExportFormat = 'html' | 'pdf' | 'pptx' | 'odp'
 
