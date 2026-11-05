@@ -18,6 +18,7 @@ function makeRepository(initialProjects: Project[] = []): IProjectRepository {
 }
 
 describe('useProjectController', () => {
+  // Comprueba que el hook carga los proyectos iniciales desde el repositorio recibido.
   it('loads projects from the injected repository', async () => {
     const savedProject: Project = {
       id: 'p-1', name: 'Ciencias', author: 'Ada', topic: 'Órbitas', slides: [],
@@ -30,6 +31,7 @@ describe('useProjectController', () => {
     expect(repository.getAll).toHaveBeenCalledTimes(1)
   })
 
+  // Comprueba que un fallo inicial termina la carga y queda disponible como error.
   it('clears loading and exposes a repository error when the initial load fails', async () => {
     const repository = makeRepository()
     jest.mocked(repository.getAll).mockRejectedValueOnce(new Error('falló la carga'))
@@ -40,6 +42,7 @@ describe('useProjectController', () => {
     expect(result.current.projects).toEqual([])
   })
 
+  // Comprueba que refrescar vuelve a consultar los datos y limpia un error anterior.
   it('refreshes the list and clears a previous error', async () => {
     const repository = makeRepository()
     const { result } = renderHook(() => useProjectController(repository))
@@ -57,6 +60,7 @@ describe('useProjectController', () => {
     expect(repository.getAll).toHaveBeenCalledTimes(2)
   })
 
+  // Comprueba el flujo exitoso de creación y eliminación a través del repositorio.
   it('creates and removes projects through the repository', async () => {
     const repository = makeRepository()
     const { result } = renderHook(() => useProjectController(repository))
@@ -79,6 +83,7 @@ describe('useProjectController', () => {
     expect(result.current.projects).toEqual([])
   })
 
+  // Comprueba que los espacios al inicio y al final se quitan antes de guardar.
   it('trims project fields before saving', async () => {
     const repository = makeRepository()
     const { result } = renderHook(() => useProjectController(repository))
@@ -93,6 +98,7 @@ describe('useProjectController', () => {
     }))
   })
 
+  // Comprueba que un error de guardado se informa y el proyecto no entra en la lista.
   it('exposes creation errors and does not add an unsaved project', async () => {
     const repository = makeRepository()
     const failure = new Error('no se pudo guardar')
@@ -109,6 +115,7 @@ describe('useProjectController', () => {
     expect(result.current.error).toBe(failure.message)
   })
 
+  // Comprueba que un error al eliminar se informa y el proyecto sigue en la lista.
   it('exposes deletion errors and keeps the project in the list', async () => {
     const project: Project = {
       id: 'p-3', name: 'Música', author: 'Ada', topic: 'Ritmo', slides: [],

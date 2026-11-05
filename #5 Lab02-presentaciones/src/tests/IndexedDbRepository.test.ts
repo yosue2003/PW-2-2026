@@ -27,10 +27,12 @@ describe('IndexedDbProjectRepository', () => {
     indexedDB.deleteDatabase(databaseName)
   })
 
+  // Comprueba que el repositorio crea la base y comienza sin proyectos.
   it('initializes the database and returns an empty project list', async () => {
     await expect(repository.getAll()).resolves.toEqual([])
   })
 
+  // Comprueba que un proyecto guardado se puede recuperar por ID y aparece en el listado.
   it('saves and reads a project by id', async () => {
     const project = makeProject('project-1', 'Mi primera presentación')
 
@@ -40,10 +42,12 @@ describe('IndexedDbProjectRepository', () => {
     await expect(repository.getAll()).resolves.toEqual([project])
   })
 
+  // Comprueba que buscar un ID inexistente devuelve undefined.
   it('returns undefined when a project does not exist', async () => {
     await expect(repository.getById('missing')).resolves.toBeUndefined()
   })
 
+  // Comprueba que guardar con el mismo ID actualiza y que luego se puede eliminar.
   it('updates a saved project and deletes it', async () => {
     const project = makeProject('project-1', 'Borrador')
     await repository.save(project)
@@ -57,6 +61,7 @@ describe('IndexedDbProjectRepository', () => {
     await expect(repository.getById(project.id)).resolves.toBeUndefined()
   })
 
+  // Comprueba que IndexedDB conserva los datos después de cerrar y reabrir la conexión.
   it('keeps projects available after closing and reopening the repository', async () => {
     const project = makeProject('project-persistent', 'Persistente')
     await repository.save(project)
