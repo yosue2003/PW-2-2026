@@ -5,6 +5,7 @@ import { projectRepository } from '../infrastructure/projectRepository.ts'
 import { useProjectController } from '../controllers/useProjectController.ts'
 import { PresentationMode } from './PresentationMode.tsx'
 import { SlideRenderer } from './components/SlideRenderer.tsx'
+import { htmlExporter, printProjectAsPdf } from '../infrastructure/HtmlExporter.ts'
 
 const timestamp = () => new Date().toISOString()
 const makeId = () => globalThis.crypto?.randomUUID?.() ?? `slide-${Date.now()}-${Math.random().toString(16).slice(2)}`
@@ -115,6 +116,26 @@ function App() {
     setPresenting(true)
   }
 
+  async function exportHtml() {
+    if (!activeProject) return
+    const blob = await htmlExporter.export(activeProject)
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = url
+    link.download = `${activeProject.name.trim() || 'presentacion'}.html`
+    link.click()
+    URL.revokeObjectURL(url)
+  }
+
+  async function exportPdf() {
+    if (!activeProject) return
+    try {
+      await printProjectAsPdf(activeProject)
+    } catch (exportError) {
+      setMessage(exportError instanceof Error ? exportError.message : 'No se pudo preparar el PDF')
+    }
+  }
+
   if (presenting && activeProject) {
     return <PresentationMode slides={orderedSlides} index={presentationIndex} onIndexChange={setPresentationIndex} onExit={() => setPresenting(false)} />
   }
@@ -154,6 +175,10 @@ function App() {
           <div className="page-heading">
             <div><div className="breadcrumb">Mis presentaciones <span>/</span> {activeProject?.name || 'Inicio'}</div><h1>{activeProject?.name || 'Tus ideas, en diapositivas.'}</h1><p>{activeProject ? 'Edita el contenido y presenta tus ideas.' : 'Crea una presentación y empieza a contar tu historia.'}</p></div>
             {activeProject && <button className="button button-primary" onClick={() => addSlide('content')}>＋ Nueva diapositiva</button>}
+          {activeProject && activeProject.slides.length > 0 && <div className="export-actions">
+            <button className="button button-light" onClick={exportHtml}>Exportar HTML</button>
+            <button className="button button-light" onClick={exportPdf}>Guardar como PDF</button>
+          </div>}
           </div>
 
           {projectFormOpen && (
