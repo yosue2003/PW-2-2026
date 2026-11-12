@@ -70,7 +70,8 @@ Completar cada fase antes de pasar a la siguiente: primero contratos y pruebas, 
 - **Fase 1 iniciada:** base Vite + React + TypeScript, configuración Tailwind y contratos iniciales en `src/models`.
 - **Fase 2 implementada:** repositorio IndexedDB, hook controlador de proyectos y pruebas automatizadas para ambas capas.
 - **Fase 3 implementada:** editor de proyectos y diapositivas, portada, tres layouts de contenido, vista previa y modo presentación con navegación por teclado.
-- Las pruebas se ejecutan con `npm test` (12 pruebas pasan).
+- **Fase 4 implementada:** exportación HTML y preparación de impresión para PDF.
+- Las pruebas se ejecutan con `npm test` (23 pruebas pasan).
 - `npm run build` compila TypeScript y genera la versión de producción. Las importaciones locales usan extensiones explícitas para resolver correctamente la ruta del proyecto, que contiene `#`.
 - `npm run dev` inicia Vite desde un enlace temporal con una ruta compatible; el enlace se elimina al cerrar el servidor.
 - Para instalar las dependencias y abrir el proyecto localmente, ejecuta en esta carpeta:
@@ -82,3 +83,7 @@ Completar cada fase antes de pasar a la siguiente: primero contratos y pruebas, 
 
 - La estructura de modelos está en `src/models/`; la aplicación inicial está en `src/views/App.tsx`.
 - La persistencia está en `src/infrastructure/IndexedDbProjectRepository.ts` y la lógica de proyectos en `src/controllers/useProjectController.ts`.
+
+## Observación sobre la ejecución local
+
+Se observó que al abrir la aplicación localmente el documento `index.html` carga, pero la interfaz React puede quedar en blanco o mostrarse incompleta. Se añadió un mensaje de diagnóstico para ese caso. La causa del fallo de renderizado todavía debe identificarse; que `npm run build` y `npm test` finalicen correctamente no confirma por sí solo el funcionamiento visual en el navegador.
