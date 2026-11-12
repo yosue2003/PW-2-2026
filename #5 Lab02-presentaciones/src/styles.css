@@ -9,3 +9,4 @@
 
 .export-actions{display:flex;gap:8px}.export-actions .button{white-space:nowrap}
 @media(max-width:760px){.export-actions{flex-wrap:wrap}}
+#root:empty::before{content:"No se pudo iniciar el editor. Recarga la página; si el problema continúa, revisa la consola del navegador.";display:grid;min-height:100vh;place-items:center;padding:32px;text-align:center;color:#59645c;background:#f7f8f5;font:14px/1.6 system-ui,sans-serif}
