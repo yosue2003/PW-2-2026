@@ -6,14 +6,18 @@ const { join, resolve } = require('node:path')
 const temporaryDirectory = mkdtempSync(join(tmpdir(), 'lab02-vite-'))
 const projectAlias = join(temporaryDirectory, 'project')
 const projectRoot = process.cwd()
-const viteExecutable = join(projectRoot, 'node_modules', 'vite', 'bin', 'vite.js')
+// Preserve the alias for Vite itself so the folder's `#` does not break its client URLs.
+const viteExecutable = join(projectAlias, 'node_modules', 'vite', 'bin', 'vite.js')
 const linkType = process.platform === 'win32' ? 'junction' : 'dir'
+const viteArguments = process.argv.slice(2)
+const command = ['build', 'preview'].includes(viteArguments[0]) ? viteArguments.shift() : undefined
+const cliArguments = [...(command ? [command] : []), resolve(projectAlias), ...viteArguments]
 
 symlinkSync(projectRoot, projectAlias, linkType)
 
 const viteProcess = spawn(
   process.execPath,
-  [viteExecutable, resolve(projectAlias), ...process.argv.slice(2)],
+  ['--preserve-symlinks', '--preserve-symlinks-main', viteExecutable, ...cliArguments],
   { cwd: projectAlias, stdio: 'inherit' },
 )
 

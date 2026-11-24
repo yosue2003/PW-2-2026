@@ -1,5 +1,12 @@
 import type { Project } from '../models/Project.ts'
-import { htmlExporter, printProjectAsPdf, renderProjectHtml } from '../infrastructure/HtmlExporter.ts'
+import {
+  HtmlExporter,
+  OdpExporterAdapter,
+  PptxExporterAdapter,
+  htmlExporter,
+  printProjectAsPdf,
+  renderProjectHtml,
+} from '../infrastructure/HtmlExporter.ts'
 
 const project: Project = {
   id: 'p1', name: 'Ideas <clave>', author: 'Ada & Grace', topic: 'Tecnología',
@@ -25,16 +32,42 @@ describe('exportación de presentaciones', () => {
     expect(html).toContain('&lt;script&gt;alert(1)&lt;/script&gt;')
     expect(html).not.toContain('<script>alert(1)</script>')
     expect(html).toContain('Línea uno<br>Línea dos')
-    expect(html).toContain('class="slide cover text-only"')
-    expect(html).toContain('class="slide  text-and-image"')
+    expect(html).toContain('class="slide cover"')
+    expect(html).toContain('class="slide text-and-image"')
+    expect(html).toContain('class="content split"')
     expect(html).toContain('https://example.com/imagen.jpg')
     expect(html).toContain('@media print')
+  })
+
+  it('renders image-only slides without body copy and rejects unsafe image schemes', () => {
+    const imageOnly: Project = {
+      ...project,
+      slides: [{
+        ...project.slides[1], layout: 'image-only', body: 'Este texto no debe aparecer',
+        imageUrl: 'javascript:alert(1)',
+      }],
+    }
+    const html = renderProjectHtml(imageOnly)
+
+    expect(html).toContain('class="content image-only"')
+    expect(html).not.toContain('Este texto no debe aparecer')
+    expect(html).not.toContain('javascript:alert(1)')
+  })
+
+  it('exposes Office exporter stubs through the shared exporter contract', async () => {
+    const exporters = [new PptxExporterAdapter(), new OdpExporterAdapter()]
+
+    expect(new HtmlExporter().format).toBe('html')
+    expect(exporters.map((exporter) => exporter.format)).toEqual(['pptx', 'odp'])
+    await expect(exporters[0].export(project)).rejects.toThrow('PowerPoint')
+    await expect(exporters[1].export(project)).rejects.toThrow('LibreOffice')
   })
 
   it('abre el documento exportado e invoca la impresión para guardar como PDF', async () => {
     const print = jest.fn()
     const fakeWindow = {
       document: { open: jest.fn(), write: jest.fn(), close: jest.fn() },
+      focus: jest.fn(),
       print,
       onload: null as (() => void) | null,
     } as unknown as Window
@@ -45,6 +78,7 @@ describe('exportación de presentaciones', () => {
     expect(openWindow).toHaveBeenCalledWith('', '_blank')
     expect(fakeWindow.document.write).toHaveBeenCalledWith(expect.stringContaining('@media print'))
     ;(fakeWindow.onload as unknown as () => void)()
+    expect(fakeWindow.focus).toHaveBeenCalledTimes(1)
     expect(print).toHaveBeenCalledTimes(1)
   })
 

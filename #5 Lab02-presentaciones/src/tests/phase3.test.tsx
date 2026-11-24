@@ -25,6 +25,8 @@ describe('Fase 3: componentes, layouts y presentación', () => {
     await Promise.all(projects.map((project) => projectRepository.delete(project.id)))
   })
 
+  afterEach(() => jest.restoreAllMocks())
+
   // Comprueba que SlideRenderer identifica una portada y muestra sus datos.
   it('renderiza la portada con título, autor, tema y número', () => {
     const titleSlide: Slide = { ...baseSlide, type: 'title', title: 'Mi presentación' }
@@ -126,5 +128,41 @@ describe('Fase 3: componentes, layouts y presentación', () => {
     fireEvent.click(within(editor).getByRole('button', { name: 'Guardar cambios' }))
     await screen.findByText('Guardado en este dispositivo')
     expect(screen.getByRole('heading', { name: 'Título de la diapositiva' })).toBeInTheDocument()
+  })
+
+  it('creates the required cover when the first slide is added from the page heading', async () => {
+    render(<App />)
+
+    fireEvent.click(await screen.findByRole('button', { name: /Crear mi primera presentación/i }))
+    fireEvent.change(screen.getByLabelText('Nombre de la presentación'), { target: { value: 'Portada inicial' } })
+    fireEvent.change(screen.getByLabelText('Autor'), { target: { value: 'Ada' } })
+    fireEvent.change(screen.getByLabelText('Tema'), { target: { value: 'Ideas' } })
+    fireEvent.click(screen.getByRole('button', { name: 'Crear proyecto' }))
+
+    await screen.findByRole('heading', { name: 'Portada inicial' })
+    fireEvent.click(within(document.querySelector('.page-heading') as HTMLElement)
+      .getByRole('button', { name: /Crear portada/i }))
+
+    const typeSelect = await screen.findByLabelText('Tipo de diapositiva')
+    expect(typeSelect).toHaveValue('title')
+    expect(typeSelect).toBeDisabled()
+  })
+
+  it('deletes a project from its local project list', async () => {
+    const confirm = jest.spyOn(window, 'confirm').mockReturnValue(true)
+    render(<App />)
+
+    fireEvent.click(await screen.findByRole('button', { name: /Crear mi primera presentación/i }))
+    fireEvent.change(screen.getByLabelText('Nombre de la presentación'), { target: { value: 'Proyecto para borrar' } })
+    fireEvent.change(screen.getByLabelText('Autor'), { target: { value: 'Ada' } })
+    fireEvent.change(screen.getByLabelText('Tema'), { target: { value: 'Ideas' } })
+    fireEvent.click(screen.getByRole('button', { name: 'Crear proyecto' }))
+    await screen.findByRole('heading', { name: 'Proyecto para borrar' })
+
+    fireEvent.click(screen.getByRole('button', { name: 'Eliminar Proyecto para borrar' }))
+
+    expect(await screen.findByRole('heading', { name: /Una buena idea merece/i })).toBeInTheDocument()
+    expect(confirm).toHaveBeenCalledWith(expect.stringContaining('Proyecto para borrar'))
+    confirm.mockRestore()
   })
 })

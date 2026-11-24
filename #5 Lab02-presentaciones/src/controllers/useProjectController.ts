@@ -13,8 +13,8 @@ export function useProjectController(repository: IProjectRepository) {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  const refreshProjects = useCallback(async () => {
-    setLoading(true)
+  const refreshProjects = useCallback(async (options: { silent?: boolean } = {}) => {
+    if (!options.silent) setLoading(true)
     setError(null)
     try {
       setProjects(await repository.getAll())

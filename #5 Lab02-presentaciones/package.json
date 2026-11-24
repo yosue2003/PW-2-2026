@@ -5,8 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "node scripts/vite-safe.cjs",
-    "build": "tsc -b && vite build",
-    "preview": "vite preview",
+    "build": "tsc -b && node scripts/vite-safe.cjs build",
+    "preview": "node scripts/vite-safe.cjs preview",
     "test": "jest --runInBand"
   },
   "dependencies": {
